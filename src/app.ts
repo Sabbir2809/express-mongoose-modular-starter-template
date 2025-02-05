@@ -10,17 +10,19 @@ import router from "./routes/router";
 const app: Application = express();
 
 // application middleware
-app.use(express.json());
-cors({
-  origin: config.cors_origin || "*",
-  credentials: true,
-});
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: config.cors_origin || "*",
+    credentials: true,
+  })
+);
+app.use(express.json());
 
 // application routes
 app.use("/api/v1", router);
 
-// health checking
+// health check route
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
@@ -30,7 +32,8 @@ app.get("/", (req: Request, res: Response) => {
 
 // error handling
 app.use(globalErrorHandler);
-// catch all routes
+
+// catch-all route for 404 errors
 app.use(notFound);
 
 export default app;
